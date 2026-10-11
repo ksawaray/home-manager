@@ -35,7 +35,9 @@
     # Linux のみ
   ];
 
-  programs.zsh = {
+  programs.zsh = let
+    zshrc = "./configs/zsh/zshrc_nix";
+  in {
     enable = true;
     enableCompletion = true;
     autosuggestion.enable = true;
@@ -47,7 +49,9 @@
       theme = "candy";
     };
 
-    initContent = builtins.readFile ./configs/zsh/zshrc_nix;
+    initContent = ''
+      [[ -f ${zshrc} ]] && source ${zshrc}
+    '';
   };
 
   programs.git = {
@@ -62,7 +66,9 @@
 
   programs.tmux = {
     enable = true;
-    extraConfig = builtins.readFile ./configs/tmux/tmux.conf;
+    extraConfig = ''
+      source-file -q ./configs/tmux/tmux.conf
+    '';
   };
 
   # nix-direnv を programs モジュールで管理
