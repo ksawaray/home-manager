@@ -36,7 +36,7 @@
   ];
 
   programs.zsh = let
-    zshrc = "./configs/zsh/zshrc_nix";
+    zshrc = "~/configs/zsh/zshrc_nix";
   in {
     enable = true;
     enableCompletion = true;
@@ -66,9 +66,25 @@
 
   programs.tmux = {
     enable = true;
+
     extraConfig = ''
-      source-file -q ./configs/tmux/tmux.conf
+      # 持ち運び用の設定（リポジトリ外）を実行時に読み込む
+      source-file ~/configs/tmux/tmux.conf
+
+      # ---- macOS 専用 ----
+      set -g default-terminal "tmux-256color"
+      set -as terminal-features ",xterm-256color:RGB"
+      bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "pbcopy"
     '';
+
+    plugins = with pkgs.tmuxPlugins; [
+      {
+        plugin = dracula;
+        extraConfig = ''
+          set -g @dracula-show-fahrenheit false
+        '';
+      }
+    ];
   };
 
   # nix-direnv を programs モジュールで管理
